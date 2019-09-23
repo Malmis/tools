@@ -1,0 +1,12 @@
+#!/bin/bash
+
+InneTempSensor="inne"
+RRDDataDirectory="/root/temp/"
+RRDDataFile="inne_temp.rrd"
+
+# Get temps form OWFS
+InneTemp=`cat /mnt/1wire/$InneTempSensor/temperature|sed -e s/" "//g|awk '{$1=$1 + 0.005;printf "%.2f", $1}'`
+
+#Update RRD database
+rrdtool update $RRDDataDirectory$RRDDataFile N:$InneTemp
+echo $InneTemp

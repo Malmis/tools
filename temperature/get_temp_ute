@@ -1,0 +1,12 @@
+#!/bin/bash
+
+UteTempSensor="ute"
+RRDDataDirectory="/root/temp/"
+RRDDataFile="ute_temp.rrd"
+
+# Get temps form OWFS
+UteTemp=`cat /mnt/1wire/$UteTempSensor/temperature|sed -e s/" "//g|awk '{$1=$1 + 0.005;printf "%.2f", $1}'`
+
+#Update RRD database
+rrdtool update $RRDDataDirectory$RRDDataFile N:$UteTemp
+echo $UteTemp

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+OutsideTempSensor="ute"
+IndoorTempSensor="inne"
+#AquaTempSensor="zzzzzzzzzzzzzzzz"
+RRDDataDirectory="/root/temp/"
+RRDDataFileOut="ute_temp.rrd"
+RRDDataFileIn="inne_temp.rrd"
+#RRDDataFileAqua="aqua_temp.rrd"
+
+# Get temps
+OutsideTemp=`cat /mnt/1wire/$OutsideTempSensor/temperature|sed -e s/" "//g|awk '{$1=$1 + 0.005;printf "%.2f", $1}'`
+sleep 2;
+IndoorTemp=`cat /mnt/1wire/$IndoorTempSensor/temperature|sed -e s/" "//g|awk '{$1=$1 + 0.005;printf "%.2f", $1}'`
+sleep 2;
+AquaTemp=`cat /mnt/1wire/$AquaTempSensor/temperature|sed -e s/" "//g|awk '{$1=$1 + 0.005;printf "%.2f", $1}'`
+
+#Update RRD database
+rrdtool update $RRDDataDirectory$RRDDataFileOut N:$OutsideTemp
+sleep 5;
+rrdtool update $RRDDataDirectory$RRDDataFileIn N:$IndoorTemp
+#sleep 5;
+#rrdtool update $RRDDataDirectory$RRDDataFileAqua N:$AquaTemp
+#echo $OutsideTemp
+#echo $IndoorTemp
+#echo $AquaTemp
